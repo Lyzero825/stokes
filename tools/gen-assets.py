@@ -31,13 +31,11 @@ def _font(serif: bool, size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFon
 
 
 def draw_logo(size: int) -> Image.Image:
-    img = Image.new("RGBA", (size, size), BG)
+    # Solid lime plate + black contour integral ∮ (no dark outer field)
+    img = Image.new("RGBA", (size, size), LIME)
     draw = ImageDraw.Draw(img)
     scale = size / 512
     cx = cy = size / 2
-    r = 200 * scale
-    draw.ellipse((cx - r, cy - r, cx + r, cy + r), fill=LIME)
-    # Contour integral ∮ — the original brand glyph (not a period)
     mark_size = max(10, int(220 * scale * 0.95))
     font = _font(True, mark_size)
     for path in (
@@ -69,11 +67,12 @@ def draw_og() -> Image.Image:
     img = Image.new("RGB", (w, h), BG)
     draw = ImageDraw.Draw(img)
 
-    # Accent mark — lime disc + faint closed contour loop
+    # Accent mark — solid lime plate + contour integral
     mark_cx, mark_cy = 280, h // 2
     mark_r = 88
-    draw.ellipse(
+    draw.rounded_rectangle(
         (mark_cx - mark_r, mark_cy - mark_r, mark_cx + mark_r, mark_cy + mark_r),
+        radius=18,
         fill=LIME,
     )
     mark_font = _font(True, 96)

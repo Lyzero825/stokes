@@ -1,7 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="stokes">
-  <!-- Stokes brand mark: lime disc + contour integral ∮ -->
-  <rect width="512" height="512" fill="#0b0c0e"/>
-  <circle cx="256" cy="256" r="200" fill="#bfff00"/>
+  <!-- Stokes brand mark: solid lime plate + contour integral ∮ -->
+  <rect width="512" height="512" fill="#bfff00"/>
   <text
     x="256"
     y="286"
