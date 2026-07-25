@@ -31,7 +31,14 @@ def _font(serif: bool, size: int) -> ImageFont.FreeTypeFont | ImageFont.ImageFon
 
 
 def draw_logo(size: int) -> Image.Image:
-    # Solid lime plate + black contour integral ∮ (no dark outer field)
+    # Prefer cat mark source if present (tools/apply-cat-logo.py)
+    source = ASSETS / "logo-source.png"
+    if source.exists():
+        return Image.open(source).convert("RGBA").resize(
+            (size, size), Image.Resampling.LANCZOS
+        )
+
+    # Fallback: solid lime plate + black contour integral ∮
     img = Image.new("RGBA", (size, size), LIME)
     draw = ImageDraw.Draw(img)
     scale = size / 512
@@ -67,50 +74,16 @@ def draw_og() -> Image.Image:
     img = Image.new("RGB", (w, h), BG)
     draw = ImageDraw.Draw(img)
 
-    # Accent mark — solid lime plate + contour integral
+    # Accent mark — brand logo (cat plate or fallback glyph)
     mark_cx, mark_cy = 280, h // 2
-    mark_r = 88
-    draw.rounded_rectangle(
-        (mark_cx - mark_r, mark_cy - mark_r, mark_cx + mark_r, mark_cy + mark_r),
-        radius=18,
-        fill=LIME,
-    )
-    mark_font = _font(True, 96)
-    for path in (
-        "C:/Windows/Fonts/seguisym.ttf",
-        "C:/Windows/Fonts/seguibli.ttf",
-        "C:/Windows/Fonts/arial.ttf",
-    ):
-        p = Path(path)
-        if p.exists():
-            try:
-                mark_font = ImageFont.truetype(str(p), 96)
-                break
-            except OSError:
-                pass
-    ch = "∮"
-    bbox = draw.textbbox((0, 0), ch, font=mark_font)
-    tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
-    draw.text(
-        (mark_cx - tw / 2 - bbox[0], mark_cy - th / 2 - bbox[1] - th * 0.02),
-        ch,
-        fill=DOT,
-        font=mark_font,
-    )
-
-    # Contour loop around the disc (circulation feel)
-    loop_cx, loop_cy = mark_cx, mark_cy
-    loop_rx, loop_ry = 150, 118
-    import math
-
-    pts = []
-    for i in range(64):
-        t = i / 64 * math.tau
-        wobble = 0.14 * math.sin(3 * t) + 0.08 * math.sin(5 * t + 0.6)
-        rx = loop_rx * (1 + wobble)
-        ry = loop_ry * (1 - wobble * 0.4)
-        pts.append((loop_cx + rx * math.cos(t), loop_cy + ry * math.sin(t)))
-    draw.line(pts + [pts[0]], fill=(191, 255, 0, 120), width=2)
+    mark_size = 176
+    mark = draw_logo(mark_size)
+    x0 = mark_cx - mark_size // 2
+    y0 = mark_cy - mark_size // 2
+    if mark.mode == "RGBA":
+        img.paste(mark, (x0, y0), mark)
+    else:
+        img.paste(mark, (x0, y0))
 
     # Wordmark + subtitle
     title_font = _font(True, 96)
