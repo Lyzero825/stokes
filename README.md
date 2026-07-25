@@ -17,3 +17,4 @@ Edit the bootstrap `window.STOKES` object in `index.html` (or set it before `mai
 - `gmgnUrl` — optional chart link for the CA slot
 
 Leave fields empty until real. Empty ⇒ honest TBA chrome, no fake links.
+"# stokes" 
