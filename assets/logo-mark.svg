@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="stokes mark">
+  <!-- Transparent mark only (no dark plate) — for favicon / avatar use -->
+  <circle cx="256" cy="256" r="256" fill="#bfff00"/>
+  <text
+    x="256"
+    y="292"
+    text-anchor="middle"
+    font-family="Segoe UI Symbol, Georgia, 'Times New Roman', serif"
+    font-size="240"
+    fill="#0a0a0a"
+  >∮</text>
+</svg>
