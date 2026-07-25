@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>stokes — circulation around a closed wallet path</title>
-  <meta name="description" content="Stokes keeps the running circulation of a wallet's closed trade path. The reading is the product. The token is a flag — not wired to the math." />
+  <title>stokes — signed circulation around a closed wallet path</title>
+  <meta name="description" content="Stokes keeps the signed circulation of a closed wallet path. One step, append-only. The reading is the product. The token is a flag — not wired to the math." />
   <meta name="theme-color" content="#0b0c0e" />
   <link rel="icon" href="assets/favicon.png" type="image/png" />
   <link rel="icon" href="assets/logo.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="assets/logo.png" />
-  <meta property="og:title" content="stokes — circulation around a closed wallet path" />
-  <meta property="og:description" content="Stokes keeps the running circulation of a wallet's closed trade path. The reading is the product. The token is a flag — not wired to the math." />
+  <meta property="og:title" content="stokes — signed circulation around a closed wallet path" />
+  <meta property="og:description" content="Stokes keeps the signed circulation of a closed wallet path. The reading is the product. Token = flag — not wired to the math." />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="assets/og.png" />
   <meta property="og:url" content="" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="stokes — circulation around a closed wallet path" />
-  <meta name="twitter:description" content="Circulation around a closed wallet path. The reading is the product. Token = flag — not wired to the math." />
+  <meta name="twitter:title" content="stokes — signed circulation around a closed wallet path" />
+  <meta name="twitter:description" content="Signed circulation around a closed wallet path. The reading is the product. Token = flag — not wired to the math." />
   <meta name="twitter:image" content="assets/og.png" />
   <link rel="canonical" href="" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -64,14 +64,16 @@
       <nav class="orbit">
         <div class="axis" aria-hidden="true"></div>
         <div class="prog" id="prog" aria-hidden="true"></div>
-        <a href="#desk"><span class="n">01</span>From the desk</a>
-        <a href="#name"><span class="n">02</span>On the name</a>
-        <a href="#primitive"><span class="n">03</span>The primitive</a>
-        <a href="#path"><span class="n">04</span>On the path</a>
-        <a href="#reading"><span class="n">05</span>The reading</a>
-        <a href="#constant"><span class="n">06</span>The constant</a>
-        <a href="#flag"><span class="n">07</span>The flag</a>
-        <a href="#honesty"><span class="n">08</span>On honesty</a>
+        <a href="#what"><span class="n">01</span>What this is</a>
+        <a href="#costume"><span class="n">02</span>The costume</a>
+        <a href="#question"><span class="n">03</span>The sharper question</a>
+        <a href="#name"><span class="n">04</span>On the name</a>
+        <a href="#geometry"><span class="n">05</span>Circulation, not costume</a>
+        <a href="#path"><span class="n">06</span>Four shapes of a loop</a>
+        <a href="#procedure"><span class="n">07</span>How the measurement runs</a>
+        <a href="#constant"><span class="n">08</span>Why 2π</a>
+        <a href="#flag"><span class="n">09</span>The flag</a>
+        <a href="#honesty"><span class="n">10</span>On honesty</a>
       </nav>
     </aside>
 
@@ -85,7 +87,7 @@
           <a href="#/note" data-overlay="overlay-note">from the drafter</a>
         </p>
         <h1 class="name">stokes</h1>
-        <p class="tagline mono">circulation around a closed wallet path — the reading is the product</p>
+        <p class="tagline mono">signed circulation around a closed wallet path</p>
 
         <div class="instrument" aria-label="Illustrative circulation instrument">
           <div class="instrument-head mono">
@@ -103,27 +105,56 @@
         </div>
       </header>
 
-      <section id="desk">
-        <h2>From the desk</h2>
+      <section id="what">
+        <h2>01 / 10 · What this is</h2>
         <p>
-          For a few years now I have watched wallet pages sell the same costume. A balance.
-          A PnL chart. A gallery of pictures the address once touched. The pitch never really changes.
-          You open a tab, you watch numbers move, and you tell yourself you have read the wallet.
-          Something about that shape always bothered me. The thing being measured was almost never
-          the thing that actually closed.
+          Stokes is a page that keeps a count. Take an address as a boundary. Reconstruct a closed
+          path of counterparties and transfers over a fixed window. Walk the path segment by
+          segment. At every step, add the signed area element
+          <span class="mono">½ (x dy − y dx)</span>
+          to a running total. That total is Γ. The sign of Γ says which way the loop has been
+          winding. The magnitude says how hard.
         </p>
         <p>
+          The reading is the product. Nothing here forecasts. Nothing here asks you to trust a
+          team’s character. An instrument does not ask for trust. It shows its work.
+        </p>
+      </section>
+
+      <section id="costume">
+        <h2>02 / 10 · The costume</h2>
+        <p>
+          For a few years now I have watched wallet pages sell the same costume. A balance that
+          pretends a boundary is a pile. A PnL chart that flattens a loop into a score. A gallery
+          of pictures the address once touched, arranged as if contact were comprehension.
+          The pitch never really changes. You open a tab, you watch numbers move, and you tell
+          yourself you have read the wallet.
+        </p>
+        <p>
+          Something about that shape always bothered me. The thing being measured was almost never
+          the thing that actually closed. The costume looked finished. The loop did not.
+        </p>
+      </section>
+
+      <section id="question">
+        <h2>03 / 10 · The sharper question</h2>
+        <p>
           A wallet is not a pile. It is a boundary. Value crosses it, loops around it through
-          counterparties, and sometimes returns changed. Most tools flatten that loop into a score
-          and ask you to trust the flattening. I started asking a different question. What would
-          it mean to keep the circulation itself — the signed winding of a closed trade path —
-          instead of inventing a story on top of it?
+          counterparties, and sometimes returns changed. Most tools flatten that loop into a
+          story and ask you to trust the flattening. Skip a transfer the UI did not like and the
+          night did not happen.
+        </p>
+        <p>
+          So I started asking a different question. What would it mean to keep the circulation
+          itself — the signed winding of a closed trade path — instead of inventing a narrative
+          on top of it? No bolt between story and mechanism. One object, two languages: the
+          sentence that says what is being kept, and the step that appends it.
         </p>
         <p>Stokes is the answer I kept arriving at.</p>
       </section>
 
       <section id="name">
-        <h2>On the name</h2>
+        <h2>04 / 10 · On the name</h2>
         <p>
           George Gabriel Stokes spent the middle of the nineteenth century writing equations that
           refused to decorate themselves. The result that carries his name is simple enough to say
@@ -140,95 +171,121 @@
         </p>
       </section>
 
-      <section id="primitive">
-        <h2>The primitive</h2>
+      <section id="geometry">
+        <h2>05 / 10 · Circulation, not costume</h2>
         <p>
-          Most tokens are a story bolted onto a supply curve, and the bolt is where they break:
-          the story can promise anything while the mechanism quietly does something else.
-          Stokes has no bolt. The story — keep the running circulation of a closed wallet path —
-          and the instrument — append each signed segment as it arrives — are not two things that
-          happen to rhyme. They are the same object, one process written in two languages.
+          Walk a closed curve on a surface. Sum the tangential pull along the edge. That sum is
+          the circulation. It does not care how fast you walked. It cares which way the field
+          wound, and how much area the winding enclosed in the signed sense. Curl on the sheet
+          and circulation on the rim are the same fact written twice. That is the load-bearing
+          honesty of the theorem: you cannot decorate one side without answering to the other.
         </p>
         <p>
-          Concretely: take an address as a boundary. Reconstruct a closed path of counterparties
-          and transfers over a fixed window. Each edge carries a signed contribution. The running
-          total is Γ. The sign of Γ says which way the loop has been winding. The reading is the
-          product. Nothing here forecasts. Nothing here asks you to trust a team’s character.
-          An instrument does not ask for trust. It shows its work.
+          A wallet path works the same way. Plot counterparties and transfers as points in a
+          plane the procedure fixes. Connect them in time order. Close the window — or fail to,
+          which is itself a scar. Each edge contributes a signed triangle with the origin of the
+          shoelace step. The running total is Γ. Most portfolio theater throws that total away and
+          sells you a costume instead. Stokes keeps it.
+        </p>
+        <p>
+          Most tokens are a story bolted onto a supply curve, and the bolt is where they break.
+          Stokes has no bolt. The story — keep the running circulation of a closed wallet path —
+          and the instrument — append each signed segment as it arrives — are the same object.
         </p>
       </section>
 
       <section id="path">
-        <h2>On the path</h2>
+        <h2>06 / 10 · Four shapes of a loop</h2>
         <p>
-          A path is not a history dump. It is a closed sequence: every outbound edge that leaves
-          the boundary should, in the window you chose, find its return — or fail to, which is
-          itself information. Stokes treats failure to close as a measurable defect in the loop,
-          not as missing UI. Wash loops wind fast and cancel. One-way drains leave a scar in Γ
-          that does not pretend to be symmetry.
+          A path is not a history dump. It is a closed sequence under a fixed window. In the
+          illustrative desk the window is 256 steps — long enough to see a wind, short enough to
+          recompute by hand. Longer windows are possible. They are not magic. They are more of
+          the same integral.
         </p>
         <p>
-          The window is fixed at 256 steps in the illustrative desk, the same length Mark-style
-          instruments use when they want a number you can recompute by hand. Longer windows are
-          possible; they are not magic. They are more of the same integral.
+          Four shapes show up again and again. Independent drift keeps Γ near a living wind —
+          the loop breathes without canceling itself. Wash loops spin hard and cancel; the
+          costume looks busy, the integral refuses to be impressed. One-way drains refuse to
+          close; Γ carries a scar that does not pretend to be symmetry. Whale ramps straighten
+          the geometry until the wind looks polite and false — the exponent dies, the page still
+          reports the number.
+        </p>
+        <p>
+          Stokes does not grade these shapes with adjectives. Open the
+          <a href="#/instrument" data-nav="instrument">instrument</a>
+          and scrub the regimes yourself. The integral is the grade.
         </p>
       </section>
 
-      <section id="reading">
-        <h2>01 / 08 · What this is</h2>
+      <section id="procedure">
+        <h2>07 / 10 · How the measurement runs</h2>
         <p>
-          Stokes is a page that keeps a count. It reads public chain state anyone else can read,
-          and it appends each new segment as it comes in. The curve on this page is not a mood.
-          It is the geometry of a path that already closed — or failed to — before anyone looked.
+          The instrument is this page. Today the path is illustrative geometry you can drive with
+          your hands — seed, pressure, regime — so the shape of the count is visible before live
+          ingestion lands. At genesis the same procedure points at public chain state anyone else
+          can read: reconstruct the boundary’s closed path over the window, walk the segments in
+          order, append the shoelace step, draw Γ.
         </p>
         <p>
-          Open the <a href="#/instrument" data-nav="instrument">instrument</a> to scrub regimes,
-          seed paths, and watch Γ update from the same shoelace step the source overlay prints.
-          Paste the step into a console. Get the same number. That reproducibility is not a
+          There is no private feed in the claim, no curated mirror that gets to edit the night.
+          The equality the rest of the page protects is one line:
+          <span class="mono">Γ ← Γ + ½ (xₙ yₙ₊₁ − xₙ₊₁ yₙ)</span>.
+          Paste it from
+          <a href="#/source" data-overlay="overlay-source">source/of/code</a>
+          into a console. Get the same number the desk prints. That reproducibility is not a
           marketing claim. It is the product wearing its insides on the outside.
+        </p>
+        <p>
+          If the answer someone wants is not derivable from the path and this step, the answer
+          they want is not part of the instrument. Upgrade authority: none intended. Keys: not a
+          feature of the reading.
         </p>
       </section>
 
       <section id="constant">
-        <h2>On the constant</h2>
+        <h2>08 / 10 · Why 2π</h2>
         <p>
-          There is one constant in the whole procedure that matters for orientation: a full wind
-          is a turn of 2π in the signed sense the instrument uses for display. It is what it is.
-          Nobody on this desk picked it because it felt branded. The point of the constant is that
-          nobody picked it.
+          There is one constant in the whole procedure that matters for orientation. A full wind
+          is a turn of 2π in the signed sense the instrument uses for display. It is the natural
+          unit of a revolution, the same way a meter is a unit of length. Nobody on this desk
+          picked it because it felt branded. The point of the constant is that nobody picked it.
         </p>
         <p>
-          If the answer someone wants is not derivable from the path and the public feeds Stokes
-          reads, the answer they want is not part of the instrument. That sentence is the entire
-          security model written without a security theater. Upgrade authority: none intended.
-          Keys: not a feature of the reading. The winding was happening before the chart, and it
-          will outlast it.
+          When Γ / 2π crosses an integer, the path has wound once in that signed sense. Nothing
+          on the page announces the crossing as a reward. Nothing in the procedure pays you for
+          it. It simply happens, and the count moves. The winding was happening before the chart.
+          It will outlast it.
         </p>
       </section>
 
       <section id="flag">
-        <h2>On the flag</h2>
+        <h2>09 / 10 · The flag</h2>
         <p>
           If there is a token beside this page, treat it as a cultural handle — a community flag —
           not as a wire into Γ. Brand layer · not wired to the math. We would rather be explicit
-          and unexciting here than let anyone fill the gap with assumptions. The float does not
-          move the circulation. The page does not invent it. Observers keep the count.
+          and unexciting here than let anyone fill the gap with assumptions.
+        </p>
+        <p>
+          The float does not move the circulation. The page does not invent it. Observers keep
+          the count. Early holders, if any, are first mass in the field — first people looking
+          through the glass — not owners of a finished protocol utility that does not exist yet.
         </p>
       </section>
 
       <section id="honesty">
-        <h2>On honesty</h2>
+        <h2>10 / 10 · On honesty</h2>
         <p>
           Let me be plain about where this stands today. The gauge on this manuscript is
-          illustrative — projected geometry so you can see the shape of the thing. The instrument
-          view lets you drive that geometry with your hands. Live path ingestion from chain state
-          is what is being built on top of that shape. CA: TBA. Nothing on this page is financial
-          advice, and nothing here claims finished, audited infrastructure.
+          illustrative — projected geometry so you can see the true shape of the thing. The
+          instrument view lets you drive that geometry with your hands. Live path ingestion from
+          chain state is what is being built on top of that shape. CA: TBA. Nothing on this page
+          is financial advice, and nothing here claims finished, audited infrastructure.
         </p>
         <p>
           What you open at the start is not a promise dressed as a protocol. It is a desk pointed
-          at closed paths. If the idea of being shown the wind rather than sold a costume lands
-          with you, then you are the person this page was drafted for.
+          at closed paths. That is the honest version of the pitch. If the idea of being shown
+          the wind rather than sold a costume lands with you, then you are the person this page
+          was drafted for.
         </p>
         <p>
           The paper is the map. The path is the territory.
@@ -253,7 +310,8 @@
         <p class="mono eyebrow"><span class="live">desk</span> · interactive · still illustrative until genesis</p>
         <h1 class="desk-title">instrument</h1>
         <p class="desk-lead">
-          Drive a closed path. Watch Γ accumulate from the same step printed in
+          Drive a closed path through four regimes. Watch Γ accumulate from the same shoelace
+          step printed in
           <a href="#/source" data-overlay="overlay-source">source/of/code</a>.
           No forecast. No trust theater. The reading is the product.
         </p>
@@ -275,10 +333,10 @@
           <label class="field mono">
             <span>regime</span>
             <select id="regime">
-              <option value="drift">independent drift ≈ honest wind</option>
-              <option value="wash">wash loop · cancels</option>
-              <option value="drain">one-way drain · scar</option>
-              <option value="whale">smooth ramp · exponent dies</option>
+              <option value="drift">drift · living wind</option>
+              <option value="wash">wash · spins and cancels</option>
+              <option value="drain">drain · refuses to close</option>
+              <option value="whale">whale · polite false calm</option>
             </select>
           </label>
           <label class="field mono">
@@ -309,10 +367,11 @@
       <section class="desk-copy">
         <h2>What you are looking at</h2>
         <p>
-          Each regime is a different lie markets tell about a loop. Independent drift keeps Γ near
-          a living wind. Wash loops spin hard and cancel. Drains refuse to close. Whale ramps
-          straighten the geometry until the wind looks polite and false. Stokes does not grade
-          them with adjectives. It keeps the integral.
+          Each regime is a different lie a loop can tell. Drift keeps Γ near a living wind. Wash
+          spins hard and cancels. Drain refuses to close and leaves a scar. Whale straightens the
+          geometry until the wind looks polite and false. Stokes does not grade them with
+          adjectives. It keeps the integral — the same step the manuscript teaches and the source
+          overlay prints.
         </p>
       </section>
     </main>
@@ -324,9 +383,10 @@
       <button class="overlay-close mono" type="button" data-close>close</button>
       <h2 class="overlay-title">source / of / code</h2>
       <p>
-        The heart of the reading is one step. Paste it into a console and get the same number
-        the desk prints. Nothing below claims to be the full ingestion pipeline. It is the
-        equality the rest of the page is built to protect.
+        The whole measurement collapses to one step. Paste it into a console and get the same
+        number the desk prints. Nothing below claims to be the full chain-ingestion pipeline.
+        It is the equality the rest of the page is built to protect — the product with its
+        insides on the outside.
       </p>
       <pre class="code mono" tabindex="0"><code><span class="c">// Stokes — circulation step (shoelace segment)</span>
 <span class="c">// Γ_{n+1} = Γ_n + ½ (x_n y_{n+1} − x_{n+1} y_n)</span>
@@ -364,12 +424,12 @@
         wallet paths, and a manuscript that refuses to bolt a costume onto that count.
       </p>
       <p>
-        What is here now is enough to see the thought run and to argue with it: the manuscript,
-        the instrument, the step in source. I am not going to dress it up as audited,
+        What is here now is enough to see the thought run and to argue with it: the teaching
+        spine, the instrument, the step in source. I am not going to dress it up as audited,
         mainnet-hardened infrastructure, because it isn’t, and pretending otherwise would break
-        the one promise the whole thing is about. If it is wrong, it should be easy to show that.
-        If there is something here, it should be easy to build the next thing on top of it —
-        deeper, in the open.
+        the one promise the whole thing is about. If it is wrong, it should be easy to show that
+        in a console. If there is something here, it should be easy to build the next thing on
+        top of it — deeper, in the open.
       </p>
       <p>
         I am not going to tell you this is inevitable or that it wins. I genuinely don’t know.
@@ -380,7 +440,8 @@
         staying in.
       </p>
       <p>
-        That is the honest deal, and it is the only one on offer.
+        That is the honest deal, and it is the only one on offer. The paper is the map. Come
+        help build the territory.
       </p>
     </div>
   </div>
