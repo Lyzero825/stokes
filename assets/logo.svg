@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="stokes">
-  <!-- Stokes brand mark: solid lime plate + contour integral ∮ -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ampere">
+  <!-- Ampere brand mark: solid lime plate + contour integral ∮ -->
   <rect width="512" height="512" fill="#bfff00"/>
   <text
     x="256"

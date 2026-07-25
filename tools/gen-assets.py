@@ -1,4 +1,4 @@
-"""Generate stokes PNG assets from brand spec (Pillow)."""
+"""Generate ampere PNG assets from brand spec (Pillow)."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -115,7 +115,7 @@ def draw_og() -> Image.Image:
     # Wordmark + subtitle
     title_font = _font(True, 96)
     sub_font = _font(False, 28)
-    title = "stokes"
+    title = "ampere"
     subtitle = "circulation around a closed wallet path · Γ · 2π"
 
     tx = 520
