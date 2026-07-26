@@ -602,3 +602,5 @@ body.overlay-open { overflow: hidden; }
   .top-launch-sep { display: inline; }
   .desk-grid { grid-template-columns: 1fr; }
 }
+
+.overlay-inner-wide { max-width: 820px; }

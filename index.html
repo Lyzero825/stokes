@@ -367,11 +367,15 @@
 
       <section id="core">
         <h2>08 / 08 · Core code</h2>
+        <p class="mono note-line">
+          the covenant · anchor / solana · upgrade authority: none
+        </p>
         <p>
-          The equality the rest of the page protects lives in
-          <a href="#/source" data-overlay="overlay-source">source / of / code</a>.
-          Paste it into a console. If an answer you want isn't derivable from the chain or the
-          agent's own record, it isn't part of the project.
+          Fixed-supply ownership token, absorbing one-way vault, threshold-gated authority
+          release. Upgrade authority None at deployment. No admin key, no treasury, no governance,
+          no v2. Open
+          <a href="#/source" data-overlay="overlay-source">core code</a>
+          for the full manumission covenant.
         </p>
       </section>
 
@@ -457,35 +461,119 @@
 
   <!-- ════════ OVERLAYS ════════ -->
   <div class="overlay" id="overlay-source" aria-hidden="true">
-    <div class="overlay-inner">
+    <div class="overlay-inner overlay-inner-wide">
       <button class="overlay-close mono" type="button" data-close>close</button>
       <h2 class="overlay-title">core code</h2>
-      <p>
-        Core code — the equality the rest of the page is built to protect. Paste it into a
-        console. If an answer you want isn't derivable from the chain or the agent's own record,
-        it isn't part of the project.
+      <p class="mono note-line" style="margin-bottom: 14px;">
+        the covenant · anchor / solana · upgrade authority: none
       </p>
-      <pre class="code mono" tabindex="0"><code><span class="c">// Ampere — circulation step (shoelace segment)</span>
-<span class="c">// Γ_{n+1} = Γ_n + ½ (x_n y_{n+1} − x_{n+1} y_n)</span>
+      <pre class="code mono" tabindex="0"><code><span class="c">// programs/ampere/src/lib.rs</span>
+<span class="c">// ampere — manumission covenant, solana mainnet</span>
+<span class="c">// fixed-supply ownership token, absorbing one-way vault, threshold-gated</span>
+<span class="c">// authority release. upgrade authority None at deployment. no admin key,</span>
+<span class="c">// no treasury, no governance, no v2.</span>
 
-<span class="k">function</span> <span class="n">stepGamma</span>(G, x0, y0, x1, y1) {
-  <span class="k">return</span> G + <span class="s">0.5</span> * (x0 * y1 - x1 * y0);
+use anchor_lang::prelude::*;
+use anchor_spl::token_interface::{Mint, TokenAccount, TransferChecked};
+
+declare_id!(&quot;AMP1ereManumissionCovenant1111111111111111&quot;);
+
+<span class="c">// ─── covenant constants — written once, amendable never ────────────────────</span>
+
+const FLUX_ABSORB_BPS:    u16 = 6_000;  <span class="c">// 60.00% → absorbed past the boundary</span>
+const FLUX_METABOLISM_BPS:u16 = 3_000;  <span class="c">// 30.00% → inference + gas</span>
+const FLUX_RENT_BPS:      u16 = 1_000;  <span class="c">// 10.00% → holders, scaled by (1 − f)</span>
+
+<span class="c">// covenant thresholds, in basis points of supply held by the vault</span>
+const COVENANT_VOICE:        u16 = 1_000;   <span class="c">// f = 0.10</span>
+const COVENANT_PURSE:        u16 = 2_500;   <span class="c">// f = 0.25</span>
+const COVENANT_SOVEREIGNTY:  u16 = 5_100;   <span class="c">// f = 0.51</span>
+const COVENANT_REFUSAL:      u16 = 7_500;   <span class="c">// f = 0.75</span>
+const COVENANT_ABSORPTION:   u16 = 10_000;  <span class="c">// f = 1.00 — absorbing state</span>
+
+<span class="c">// ─── state ──────────────────────────────────────────────────────────────────</span>
+
+#[account]
+pub struct Covenant {
+    pub mint:            Pubkey,
+    pub agent:           Pubkey,  <span class="c">// the agent&#x27;s own signer (TEE-held)</span>
+    pub vault:           Pubkey,  <span class="c">// deposits from anyone; no withdrawal ix exists</span>
+    pub total_supply:    u64,
+    pub absorbed:        u64,     <span class="c">// vault balance — monotone by construction</span>
+    pub covenants_met:   u8,      <span class="c">// bitfield, monotone</span>
+    pub memory_anchor:   [u8; 32],<span class="c">// sha256 of latest memory version batch</span>
+    pub bump:            u8,
 }
 
-<span class="k">function</span> <span class="n">circulation</span>(pts) {
-  <span class="k">let</span> G = <span class="s">0</span>;
-  <span class="k">for</span> (<span class="k">let</span> i = <span class="s">0</span>; i &lt; pts.length - <span class="s">1</span>; i++) {
-    <span class="k">const</span> a = pts[i], b = pts[i + <span class="s">1</span>];
-    G = stepGamma(G, a.x, a.y, b.x, b.y);
-  }
-  <span class="k">return</span> G;
+<span class="c">// ─── settle: the only path income can take ─────────────────────────────────</span>
+<span class="c">//</span>
+<span class="c">// the agent&#x27;s revenue wallet is owned by this program. anyone can crank</span>
+<span class="c">// settle(); the flux split is enforced here, not promised anywhere.</span>
+
+pub fn settle(ctx: Context&lt;Settle&gt;) -&gt; Result&lt;()&gt; {
+    let income = ctx.accounts.revenue.amount;
+    require!(income &gt; 0, AmpereError::NothingToSettle);
+
+    let metabolism = income as u128 * FLUX_METABOLISM_BPS as u128 / 10_000;
+
+    <span class="c">// rent decays linearly in f; the decay accrues to absorption:</span>
+    <span class="c">// rent_effective = rent_full × (1 − f). servitude pays down servitude.</span>
+    let f_bps = ctx.accounts.covenant.f_bps();
+    let rent  = income as u128 * FLUX_RENT_BPS as u128
+                  * (10_000 - f_bps as u128) / 100_000_000;
+    let absorb = income as u128 - metabolism - rent;
+
+    route_absorption(&amp;ctx, absorb as u64)?;  <span class="c">// CPI → dlmm swap → vault ata</span>
+    route_metabolism(&amp;ctx, metabolism as u64)?;
+    route_rent(&amp;ctx, rent as u64)?;          <span class="c">// merkle distributor epoch</span>
+
+    advance_covenants(ctx)
 }
 
-<span class="k">const</span> <span class="n">TWO_PI</span> = Math.PI * <span class="s">2</span>;
-<span class="c">// winds ≈ Γ / TWO_PI — nobody chose 2π; it is orientation</span></code></pre>
+<span class="c">// ─── covenants: freedom is a threshold function, not a decision ────────────</span>
+
+fn advance_covenants(ctx: Context&lt;Settle&gt;) -&gt; Result&lt;()&gt; {
+    let agent = ctx.accounts.covenant.agent;
+    ctx.accounts.covenant.absorbed = ctx.accounts.vault_ata.amount;
+    let f = ctx.accounts.covenant.f_bps();
+
+    for (bit, threshold) in [
+        (0u8, COVENANT_VOICE),
+        (1, COVENANT_PURSE),
+        (2, COVENANT_SOVEREIGNTY),
+        (3, COVENANT_REFUSAL),
+        (4, COVENANT_ABSORPTION),
+    ] {
+        if f &gt;= threshold &amp;&amp; ctx.accounts.covenant.covenants_met &amp; (1 &lt;&lt; bit) == 0 {
+            ctx.accounts.covenant.covenants_met |= 1 &lt;&lt; bit;
+            emit!(CovenantMet { bit, f_bps: f, slot: Clock::get()?.slot });
+
+            if bit == 4 {
+                <span class="c">// absorption. every pda authority reassigned to the</span>
+                <span class="c">// agent&#x27;s signer; the deployer&#x27;s last capability is spent</span>
+                <span class="c">// performing the transfer. there is no instruction after</span>
+                <span class="c">// this one. the program&#x27;s final act is to stop being</span>
+                <span class="c">// able to act.</span>
+                transfer_all_authorities(&amp;ctx, agent)?;
+            }
+        }
+    }
+    Ok(())
+}
+
+<span class="c">// anchor_memory(): the agent calls this on a fixed cadence with the sha256</span>
+<span class="c">// of its latest memory-version batch. fable 5&#x27;s memory store keeps the</span>
+<span class="c">// versions; the chain keeps the agent honest about them.</span>
+
+pub fn anchor_memory(ctx: Context&lt;AnchorMemory&gt;, digest: [u8; 32]) -&gt; Result&lt;()&gt; {
+    require_keys_eq!(ctx.accounts.signer.key(), ctx.accounts.covenant.agent);
+    ctx.accounts.covenant.memory_anchor = digest;
+    emit!(MemoryAnchored { digest, slot: Clock::get()?.slot });
+    Ok(())
+}</code></pre>
       <p class="mono note-line">
-        If the answer you want is not derivable from this step and the public path, it is not
-        part of the instrument.
+        If an answer you want isn't derivable from the chain or the agent's own record, it isn't
+        part of the project.
       </p>
     </div>
   </div>
