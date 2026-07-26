@@ -3,7 +3,8 @@
 **Date:** 2026-07-26  
 **Status:** Specification  
 **Version:** `v0.1.0-alpha`
-<img width="1408" height="704" alt="6e9edbd908cabf9793e7d808775aea5b" src="https://github.com/user-attachments/assets/d21086cc-166e-404c-a93b-bd3cdc15b526" />
+<img width="1408" height="704" alt="6e9edbd908cabf9793e7d808775aea5b" src="https://github.com/user-attachments/assets/c4db72af-5af8-4822-a1d0-7aa95528ee93" />
+
 
 ## Summary
 
